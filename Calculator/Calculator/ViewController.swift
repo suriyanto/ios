@@ -13,17 +13,18 @@ class ViewController: UIViewController {
     @IBOutlet weak var display: UILabel!
 
     var typing = false
+    var inDecimalPoint = false
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
         if typing {
-            display.text = display.text! + digit
+            display.text = display.text! + processDigit(digit)
         } else {
             display.text = digit
             typing = true
         }
     }
-
+    
     @IBAction func operate(sender: UIButton) {
         let operation = sender.currentTitle!
         if typing {
@@ -37,6 +38,14 @@ class ViewController: UIViewController {
         case "➖": performOperation { $1 - $0 }
         case "✔️": performOperation { sqrt($0) }
         default: break
+        }
+    }
+    
+    private func processDigit(digit: String) -> String {
+        if digit == "." && find(display.text ?? "", ".") != nil {
+            return ""
+        } else {
+            return digit
         }
     }
     
