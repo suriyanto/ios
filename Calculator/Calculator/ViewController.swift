@@ -37,8 +37,18 @@ class ViewController: UIViewController {
         case "➕": performOperation { $0 + $1 }
         case "➖": performOperation { $1 - $0 }
         case "✔️": performOperation { sqrt($0) }
+        case "sin": performOperation { sin($0) }
+        case "cos": performOperation { cos($0) }
         default: break
         }
+    }
+    
+    @IBAction func pi(sender: UIButton) {
+        if typing {
+            enter()
+        }
+        display.text = "3.14"
+        enter()
     }
     
     private func processDigit(digit: String) -> String {
@@ -68,7 +78,7 @@ class ViewController: UIViewController {
     @IBAction func enter() {
         typing = false
         operandStack.append(displayValue)
-        println("operantStack = \(operandStack)")
+        println("operandStack = \(operandStack)")
     }
     
     var displayValue: Double {
