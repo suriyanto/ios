@@ -62,6 +62,12 @@ class ViewController: UIViewController {
         println("operandStack = \(operandStack)")
     }
     
+    @IBAction func clear() {
+        operandStack = []
+        display.text = "0"
+        history.text = ""
+    }
+    
     private func appendHistory(c: String) {
         history.text = history.text! + c
     }
