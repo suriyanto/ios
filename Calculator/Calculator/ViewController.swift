@@ -17,14 +17,16 @@ class ViewController: UIViewController {
     var inDecimalPoint = false
     
     @IBAction func appendDigit(sender: UIButton) {
-        let digit = processDigit(sender.currentTitle!)
-        appendHistory(digit)
-        
-        if typing {
-            display.text = display.text! + digit
-        } else {
-            display.text = digit
-            typing = true
+        if let title = sender.currentTitle {
+            let digit = processDigit(title)
+            appendHistory(digit)
+            
+            if typing {
+                display.text = display.text! + digit
+            } else {
+                display.text = digit
+                typing = true
+            }
         }
     }
     
