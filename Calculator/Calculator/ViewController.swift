@@ -11,14 +11,17 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
-
+    @IBOutlet weak var history: UILabel!
+    
     var typing = false
     var inDecimalPoint = false
     
     @IBAction func appendDigit(sender: UIButton) {
-        let digit = sender.currentTitle!
+        let digit = processDigit(sender.currentTitle!)
+        appendHistory(digit)
+        
         if typing {
-            display.text = display.text! + processDigit(digit)
+            display.text = display.text! + digit
         } else {
             display.text = digit
             typing = true
@@ -31,6 +34,7 @@ class ViewController: UIViewController {
             enter()
         }
         
+        appendHistory(operation)
         switch operation {
         case "✖️": performOperation { $0 * $1 }
         case "➗": performOperation { $1 / $0 }
@@ -49,6 +53,17 @@ class ViewController: UIViewController {
         }
         display.text = "3.14"
         enter()
+    }
+    
+    @IBAction func enter() {
+        typing = false
+        operandStack.append(displayValue)
+        appendHistory(", ")
+        println("operandStack = \(operandStack)")
+    }
+    
+    private func appendHistory(c: String) {
+        history.text = history.text! + c
     }
     
     private func processDigit(digit: String) -> String {
@@ -74,12 +89,6 @@ class ViewController: UIViewController {
     }
 
     var operandStack = Array<Double>()
-    
-    @IBAction func enter() {
-        typing = false
-        operandStack.append(displayValue)
-        println("operandStack = \(operandStack)")
-    }
     
     var displayValue: Double {
         get{
