@@ -11,32 +11,74 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
-
+    @IBOutlet weak var history: UILabel!
+    
     var typing = false
+    var inDecimalPoint = false
     
     @IBAction func appendDigit(sender: UIButton) {
-        let digit = sender.currentTitle!
-        if typing {
-            display.text = display.text! + digit
-        } else {
-            display.text = digit
-            typing = true
+        if let title = sender.currentTitle {
+            let digit = processDigit(title)
+            appendHistory(digit)
+            
+            if typing {
+                display.text = display.text! + digit
+            } else {
+                display.text = digit
+                typing = true
+            }
         }
     }
-
+    
     @IBAction func operate(sender: UIButton) {
         let operation = sender.currentTitle!
         if typing {
             enter()
         }
         
+        appendHistory(operation)
         switch operation {
         case "✖️": performOperation { $0 * $1 }
         case "➗": performOperation { $1 / $0 }
         case "➕": performOperation { $0 + $1 }
         case "➖": performOperation { $1 - $0 }
         case "✔️": performOperation { sqrt($0) }
+        case "sin": performOperation { sin($0) }
+        case "cos": performOperation { cos($0) }
         default: break
+        }
+    }
+    
+    @IBAction func pi(sender: UIButton) {
+        if typing {
+            enter()
+        }
+        display.text = "3.14"
+        enter()
+    }
+    
+    @IBAction func enter() {
+        typing = false
+        operandStack.append(displayValue)
+        appendHistory(", ")
+        println("operandStack = \(operandStack)")
+    }
+    
+    @IBAction func clear() {
+        operandStack = []
+        display.text = "0"
+        history.text = ""
+    }
+    
+    private func appendHistory(c: String) {
+        history.text = history.text! + c
+    }
+    
+    private func processDigit(digit: String) -> String {
+        if digit == "." && find(display.text ?? "", ".") != nil {
+            return ""
+        } else {
+            return digit
         }
     }
     
@@ -55,12 +97,6 @@ class ViewController: UIViewController {
     }
 
     var operandStack = Array<Double>()
-    
-    @IBAction func enter() {
-        typing = false
-        operandStack.append(displayValue)
-        println("operantStack = \(operandStack)")
-    }
     
     var displayValue: Double {
         get{
